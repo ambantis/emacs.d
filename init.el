@@ -1,54 +1,5 @@
 
 (add-to-list 'load-path "~/.emacs.d/elisp/")
-;;--------------------------------------------------------------------
-;;
-;; set default style to Google C Style
-
-(load-file "~/.emacs.d/elisp/google-c-style.el")
-(add-hook 'c-mode-common-hook 'google-set-c-style)
-(add-hook 'c-mode-common-hook 'google-make-newline-indent)
-
-;;------------------------------------------------------------------------
-;; POPUP
-;; https://github.com/m2ym/popup-el/blob/v0.4/README.markdown
-(require 'popup)
-
-;;------------------------------------------------------------------------
-;; AUTO-COMPLETE
-;; http://cx4a.org/software/auto-complete/manual.html#Installation
-(add-to-list 'load-path "~/.emacs.d/elisp/auto-complete")
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/elisp/auto-complete/ac-dict")
-(ac-config-default)
-
-;;------------------------------------------------------------------------
-;; AC-SLIME
-;; https://github.com/purcell/ac-slime
-
-(add-to-list 'load-path "~/.emacs.d/elisp/ac-slime")
-(require 'ac-slime)
- (add-hook 'slime-mode-hook 'set-up-slime-ac)
- (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
- (eval-after-load "auto-complete"
-   '(add-to-list 'ac-modes 'slime-repl-mode))
-
-;;------------------------------------------------------------------------
-;; YASNIPPET
-;; https://github.com/capitaomorte/yasnippet/
-(add-to-list 'load-path "~/.emacs.d/elisp/yasnippet")
-(require 'yasnippet)
-(setq yas/snippet-dirs
-      '("/home/ambantis/.emacs.d/elisp/HTML5-YASnippet-bundle"
-	"/home/ambantis/.emacs.d/elisp/yasnippet/snippets"))
-(yas/initialize)
-(yas/global-mode 1)
-
-;;------------------------------------------------------------------------
-;; ZENCODING
-;; https://github.com/rooney/zencoding
-(add-to-list 'load-path "~/.emacs.d/elisp/zencoding")
-(require 'zencoding-mode)
-(add-hook 'sgml-mode-hook 'zencoding-mode) ;; Auto-start on any markup modes
 
 ;;------------------------------------------------------------------------
 ;;
@@ -82,6 +33,7 @@
 (setq org-agenda-files
       (list "~/Documents/emacs/org/compsci/hack.org"
             "~/Documents/emacs/org/home/journal.org"
+	    "~/Documents/emacs/org/home/legal.org"
             "~/Documents/emacs/org/temp.org"
             "~/Documents/emacs/org/lausd/admin.org"
             "~/Documents/emacs/org/lausd/advisory.org"
@@ -153,6 +105,9 @@
 ;; Include current clocking task in clock reports
 (setq org-clock-report-include-clocking-task t)
 
+;; http://orgmode.org/worg/org-tutorials/tracking-habits.html
+(setq org-log-repeat "time")
+
 ;; tag settings
 (setq org-tag-alist '(("@mclc" . ?m) ("@home" . ?h)
                       ("@cafe" . ?c) ("@shop" . ?s)
@@ -187,13 +142,159 @@
 ; Allow refile to create parent tasks with confirmation
 (setq org-refile-allow-creating-parent-nodes (quote confirm))
 
+;;--------------------------------------------------------------------
+;;
+;; set default style to Google C Style
+
+(load-file "~/.emacs.d/elisp/google-c-style.el")
+(add-hook 'c-mode-common-hook 'google-set-c-style)
+(add-hook 'c-mode-common-hook 'google-make-newline-indent)
+
+;;------------------------------------------------------------------------
+;; POPUP
+;; https://github.com/m2ym/popup-el/blob/v0.4/README.markdown
+(require 'popup)
+
+;;------------------------------------------------------------------------
+;; AUTO-COMPLETE
+;; http://cx4a.org/software/auto-complete/manual.html#Installation
+(add-to-list 'load-path "~/.emacs.d/elisp/auto-complete")
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/elisp/auto-complete/ac-dict")
+(ac-config-default)
+
+;;------------------------------------------------------------------------
+;; AUTOPAIR
+;; https://github.com/capitaomorte/autopair
+;; http://www.emacswiki.org/emacs/AutoPairs
+
+(add-to-list 'load-path "~/.emacs.d/elisp/autopair")
+(require 'autopair)
+
+;; use autopair just in scala buffers
+ 
+(add-hook 'scala-mode-hook #'(lambda () (autopair-mode)))
+
+;;------------------------------------------------------------------------
+;; NREPL.EL
+;; https://github.com/kingtim/nrepl.el
+
+(add-to-list 'load-path "~/.emacs.d/elisp/nrepl")
+(require 'nrepl)
+
+(add-hook 'nrepl-interaction-mode-hook
+  'nrepl-turn-on-eldoc-mode)
+(setq nrepl-popup-stacktraces nil)
+(add-to-list 'same-window-buffer-names "*nrepl*") 
+
+;; http://www.clojuremadesimple.co.uk/
+(global-set-key (kbd "C-c C-j") 'nrepl-jack-in)
+
+;;------------------------------------------------------------------------
+;; NREPL AUTO COMPLETE
+;; https://github.com/purcell/ac-nrepl
+(add-to-list 'load-path "~/.emacs.d/elisp/ac-nrepl")
+(require 'ac-nrepl)
+ (add-hook 'nrepl-mode-hook 'ac-nrepl-setup)
+ (add-hook 'nrepl-interaction-mode-hook 'ac-nrepl-setup)
+ (eval-after-load "auto-complete"
+   '(add-to-list 'ac-modes 'nrepl-mode))
+
+;;------------------------------------------------------------------------
+;; AC-SLIME
+;; https://github.com/purcell/ac-slime
+
+;;(add-to-list 'load-path "~/.emacs.d/elisp/ac-slime")
+;;(require 'ac-slime)
+;; (add-hook 'slime-mode-hook 'set-up-slime-ac)
+;; (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
+;;(eval-after-load "auto-complete"
+;;  '(add-to-list 'ac-modes 'slime-repl-mode))
+
+;;------------------------------------------------------------------------
+;; YASNIPPET
+;; https://github.com/capitaomorte/yasnippet/
+(add-to-list 'load-path "~/.emacs.d/elisp/yasnippet")
+(require 'yasnippet)
+(setq yas/snippet-dirs
+      '("/home/ambantis/.emacs.d/elisp/HTML5-YASnippet-bundle"
+	"/home/ambantis/.emacs.d/elisp/yasnippet/snippets"))
+(yas/initialize)
+(yas/global-mode 1)
+
+;;------------------------------------------------------------------------
+;; ZENCODING
+;; https://github.com/rooney/zencoding
+(add-to-list 'load-path "~/.emacs.d/elisp/zencoding")
+(require 'zencoding-mode)
+(add-hook 'sgml-mode-hook 'zencoding-mode) ;; Auto-start on any markup modes
+
+;;------------------------------------------------------------------------
+;; ENSIME
+;; https://aur.archlinux.org/packages.php?ID=52377
+
+;; load the ensime lisp code...
+(add-to-list 'load-path "/usr/share/ensime/elisp")
+(require 'ensime)
+
+;; This step causes the ensime-mode to be started whenever
+;; scala-mode is started for a buffer. You may have to customize this step
+;; if you're not using the standard scala mode.
+(add-hook 'scala-mode-hook 'ensime-scala-mode-hook)
+
+;; enhancements for Play!
+(when (and (require 'scala-mode nil 'noerror) (require 'ensime nil 'noerror))
+  (add-to-list 'auto-mode-alist '("\\.scala.html$" . scala-mode))
+  (add-hook 'scala-mode-hook 'ensime-scala-mode-hook))
+
+;;------------------------------------------------------------------------
+;; SCALA-MODE
+;; https://aur.archlinux.org/packages.php?ID=38616
+;(add-to-list 'load-path "/usr/share/emacs/scala-mode")
+(add-to-list 'load-path "~/.emacs.d/elisp/scala-mode2")
+(require 'scala-mode2)
+(setq scala-mode-feature-electric-mode t)
+
+(add-hook 'scala-mode-hook '(lambda ()
+
+  ;; Bind the 'newline-and-indent' command to RET (aka 'enter'). This
+  ;; is normally also available as C-j. The 'newline-and-indent'
+  ;; command has the following functionality: 1) it removes trailing
+  ;; whitespace from the current line, 2) it create a new line, and 3)
+  ;; indents it.  An alternative is the
+  ;; 'reindent-then-newline-and-indent' command.
+  (local-set-key (kbd "RET") 'newline-and-indent)
+
+  ;; Alternatively, bind the 'newline-and-indent' command and
+  ;; 'scala-indent:insert-asterisk-on-multiline-comment' to RET in
+  ;; order to get indentation and asterisk-insertion within multi-line
+  ;; comments.
+  ;; (local-set-key (kbd "RET") '(lambda ()
+  ;;   (interactive)
+  ;;   (newline-and-indent)
+  ;;   (scala-indent:insert-asterisk-on-multiline-comment)))
+
+  ;; Bind the 'join-line' command to C-M-j. This command is normally
+  ;; bound to M-^ which is hard to access, especially on some European
+  ;; keyboards. The 'join-line' command has the effect or joining the
+  ;; current line with the previous while fixing whitespace at the
+  ;; joint.
+  (local-set-key (kbd "C-M-j") 'join-line)
+
+  ;; Bind the backtab (shift tab) to
+  ;; 'scala-indent:indent-with-reluctant-strategy command. This is usefull
+  ;; when using the 'eager' mode by default and you want to "outdent" a
+  ;; code line as a new statement.
+  (local-set-key (kbd "<backtab>") 'scala-indent:indent-with-reluctant-strategy)
+  ;; and other bindings here
+))
 
 ;;------------------------------------------------------------------------
 ;; POPWIN
 ;; https://github.com/m2ym/popwin-el
-(add-to-list 'load-path "~/.emacs.d/elisp/popwin-el")
-(require 'popwin)
-(setq display-buffer-function 'popwin:display-buffer)
+;;(add-to-list 'load-path "~/.emacs.d/elisp/popwin-el")
+;;(require 'popwin)
+;;(setq display-buffer-function 'popwin:display-buffer)
 ;;(push "*SLIME Compilation*" popwin:special-display-config) 
 ;;(push '(sldb-mode :stick t) popwin:special-display-config)
 
@@ -236,7 +337,7 @@
 ;;
 ;; LEDGER-MODE
 ;;
-;; https://github.com/jwiegley/ledger/ 
+;; https://github.com/jwiegley/ledger/
 
 (require 'ledger)
 (add-to-list 'auto-mode-alist '("\\.ldg\\'" . ledger-mode))
@@ -246,11 +347,9 @@
 ;; CLOJURE MODE
 ;;
 ;; https://github.com/technomancy/clojure-mode
-(add-to-list 'load-path "~/.emacs.d/elisp/clojure-mode/")
-(require 'clojure-mode)
+;;(add-to-list 'load-path "~/.emacs.d/elisp/clojure-mode/")
+;;(require 'clojure-mode)
 
-;; http://www.clojuremadesimple.co.uk/
-(global-set-key (kbd "C-c C-j") 'clojure-jack-in)
 
 ;;--------------------------------------------------------------------
 ;;
@@ -277,10 +376,10 @@
 
 ;; Stop SLIME's REPL from grabbing DEL,
 ;; which is annoying when backspacing over a '('
-(defun override-slime-repl-bindings-with-paredit ()
-  (define-key slime-repl-mode-map
-    (read-kbd-macro paredit-backward-delete-key) nil))
-(add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
+;;(defun override-slime-repl-bindings-with-paredit ()
+;;(define-key slime-repl-mode-map
+;;  (read-kbd-macro paredit-backward-delete-key) nil))
+;;(add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
 
 ;; add show-paren-mode to make it easier to read lisp syntax
 (show-paren-mode)
@@ -424,6 +523,7 @@
  '(column-number-mode t)
  '(display-battery-mode t)
  '(fringe-mode 0 nil (fringe))
+ '(org-agenda-files (quote ("~/Documents/emacs/org/compsci/hack.org" "~/Documents/emacs/org/home/journal.org" "~/Documents/emacs/org/home/legal.org" "~/Documents/emacs/org/temp.org" "~/Documents/emacs/org/lausd/admin.org" "~/Documents/emacs/org/lausd/advisory.org" "~/Documents/emacs/org/lausd/biology.org" "~/Documents/emacs/org/lausd/chemistry.org" "~/Documents/emacs/org/lausd/history.org" "~/Documents/emacs/org/lausd/life-skills.org" "~/Documents/emacs/org/lausd/science.org")))
  '(org-src-window-setup (quote current-window))
  '(scroll-bar-mode nil)
  '(size-indication-mode t)
